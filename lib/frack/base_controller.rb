@@ -3,6 +3,8 @@ module Frack
     attr_reader :request
 
     def initialize(env)
+    @request = Rack::Request.new(env)
+    @flash_message = request.session&.delete('flash')
     end
 
     def render(view)
