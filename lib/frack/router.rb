@@ -8,4 +8,9 @@ module Frack
       end
 
       def call(env)
+        
+      end
+
+      def controller_action(mapping)
+      Hash[%w(controller action).zip mapping.split('#')]
       end
