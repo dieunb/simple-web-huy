@@ -27,6 +27,7 @@ GEM
     concurrent-ruby (1.3.5)
     connection_pool (2.5.4)
     drb (2.2.3)
+    erb (5.0.2)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     logger (1.7.0)
@@ -39,6 +40,7 @@ GEM
     rackup (2.2.1)
       rack (>= 3)
     securerandom (0.4.1)
+    tilt (2.6.1)
     timeout (0.4.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -50,10 +52,12 @@ PLATFORMS
 DEPENDENCIES
   activerecord
   byebug
+  erb
   pg
   puma
   rack
   rackup
+  tilt
 
 BUNDLED WITH
    2.6.7
