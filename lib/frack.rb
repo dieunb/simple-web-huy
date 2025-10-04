@@ -6,13 +6,8 @@ require 'erb'
 require 'activerecord'
 require 'pg'
 
-ActiveRecord::Base.establish_connection(
-  adapter: 'postgresql',
-  host: 'localhost',
-  database: 'simpleweb'
-  username: 'ecommerce',
-  password: 'Xuanhuy21@nba'
-)
+OTR::ActiveRecord.configure_from_file!('config/database.yml')
+OTR::ActiveRecord.establish_connection!
 
 module Frack
   autoload :Application, 'frack/application'

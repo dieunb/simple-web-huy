@@ -1,0 +1,21 @@
+development:
+  adapter: postgresql
+  host: localhost
+  port: 5432
+  username: ecommerce
+  password: Xuanhuy21@nba
+  database: simpleweb
+staging:
+  adapter: postgresql
+  host: localhost
+  port: 5432
+  username: ecommerce
+  password: Xuanhuy21@nba
+  database: simpleweb_test
+production:
+  adapter: postgresql
+  host: localhost
+  port: 5432
+  username: ecommerce
+  password: Xuanhuy21@nba
+  database: simpleweb_production
