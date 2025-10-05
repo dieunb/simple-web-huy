@@ -13,7 +13,7 @@ module Frack
       end
     end
 
-    def render_template()
+    def render_template(path, &block)
       Tilt.new(file(path)).render(self, &block)
     end
 
