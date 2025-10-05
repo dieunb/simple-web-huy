@@ -1,7 +1,7 @@
 module Frack
   class Router
     attr_reader :routes, :app 
-      def initialize(app)
+      def initialize(app, &block)
         @app = app
         @routes = {}
         instance_eval(&block) if block_given?
