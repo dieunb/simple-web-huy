@@ -9,5 +9,5 @@ gem 'activerecord'
 gem 'pg'
 
 group :development, :test do
-    gem 'byebug'
+  gem 'byebug'
 end
