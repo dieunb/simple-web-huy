@@ -34,6 +34,7 @@ GEM
     minitest (5.25.5)
     nio4r (2.7.4)
     pg (1.6.2-x64-mingw-ucrt)
+    pg (1.6.2-x86_64-linux)
     puma (7.0.4)
       nio4r (~> 2.0)
     rack (3.2.1)
@@ -48,6 +49,7 @@ GEM
 
 PLATFORMS
   x64-mingw-ucrt
+  x86_64-linux
 
 DEPENDENCIES
   activerecord
