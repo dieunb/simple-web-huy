@@ -42,6 +42,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.6.2-x64-mingw-ucrt)
+    pg (1.6.2-x86_64-linux)
     prism (1.5.1)
     puma (7.0.4)
       nio4r (~> 2.0)
@@ -78,6 +79,7 @@ GEM
 
 PLATFORMS
   x64-mingw-ucrt
+  x86_64-linux
 
 DEPENDENCIES
   activerecord
