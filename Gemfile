@@ -10,4 +10,5 @@ gem 'pg'
 
 group :development, :test do
   gem 'byebug'
+  gem 'rubocop'
 end
