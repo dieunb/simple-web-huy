@@ -22,17 +22,36 @@ module Frack
 
       env['REQUEST_METHOD'] = http_method
       
-      if mapping = routes[path+http_method]
+      if mapping = routes[path + http_method]
         env.merge!(controller_action(mapping))
         app.call(env)
       else
         Rack::Response.new('Not found', 404).finish
       end
     end
- 
+
     def controller_action(mapping)
-      Hash[%w(controller action).zip mapping.split('#')]
+      Hash[%w(controller action).zip(mapping.split('#'))]
     end
 
+    def push(route)
+      routes.merge!(route.keys.first + 'PUSH' => route.values.first)
+    end
+ 
+    def delete(route)
+      routes.merge!(route.keys.first + 'DELETE' => route.values.first)
+    end
+    
+    def patch(route)
+      routes.merge!(route.keys.first + 'PATCH' => route.values.first)
+    end
+ 
+    def post(route)
+      routes.merge!(route.keys.first + 'POST' => route.values.first)
+    end
+ 
+    def get(route)
+      routes.merge!(route.keys.first + 'GET' => route.values.first)
+    end
   end
 end
