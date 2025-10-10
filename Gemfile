@@ -9,5 +9,6 @@ gem 'activerecord'
 gem 'pg'
 
 group :development, :test do
+  gem 'rubocop'
   gem 'byebug'
 end
