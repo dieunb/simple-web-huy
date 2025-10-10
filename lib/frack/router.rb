@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Frack
+  # Router class for handling HTTP routes and method overrides
   class Router
     attr_reader :app, :routes
 
@@ -12,14 +13,7 @@ module Frack
 
     def call(env)
       path = env['PATH_INFO']
-      http_method = env['REQUEST_METHOD']
-
-      if http_method == 'POST'
-        request = Rack::Request.new(env)
-        override_method = request.params['_method']
-        http_method = override_method.upcase if override_method && %w[DELETE PATCH PUT].include?(override_method.upcase)
-      end
-
+      http_method = resolve_http_method(env)
       env['REQUEST_METHOD'] = http_method
 
       if (mapping = routes[path + http_method])
@@ -28,6 +22,18 @@ module Frack
       else
         Rack::Response.new('Not found', 404).finish
       end
+    end
+
+    def resolve_http_method(env)
+      method = env['REQUEST_METHOD']
+
+      if method == 'POST'
+        request = Rack::Request.new(env)
+        override_method = request.params['_method']
+        method = override_method.upcase if override_method && %w[DELETE PATCH PUT].include?(override_method.upcase)
+      end
+
+      method
     end
 
     def controller_action(mapping)
