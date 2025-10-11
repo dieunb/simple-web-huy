@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 module Frack
+  # Base controller class that provides common functionality for all controllers
   class BaseController
     attr_reader :request, :session, :current_user
 
@@ -10,11 +13,11 @@ module Frack
     def render(view)
       render_template('layouts/application') do
         render_template(view)
-      end 
+      end
     end
 
     def render_template(path, &block)
-        Tilt.new(file(path)).render(self, &block)
+      Tilt.new(file(path)).render(self, &block)
     end
 
     def file(path)
