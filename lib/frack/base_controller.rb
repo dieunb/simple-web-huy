@@ -16,5 +16,9 @@ module Frack
     def render_template(path, &block)
         Tilt.new(file(path)).render(self, &block)
     end
+
+    def file(path)
+      Dir[File.join('app', 'views', "#{path}.html.*")].first
+    end
   end
 end
