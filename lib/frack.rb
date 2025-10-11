@@ -10,4 +10,5 @@ require 'pg'
 
 # Frack web framework module
 module Frack
+  autoload :Router, 'frack/router'
 end
