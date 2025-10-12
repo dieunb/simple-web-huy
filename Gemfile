@@ -9,6 +9,9 @@ gem 'puma'
 gem 'rack'
 gem 'rackup'
 gem 'tilt'
+gem 'rake'
+gem 'otr-activerecord'
+gem 'faker' 
 
 group :development, :test do
   gem 'byebug'
