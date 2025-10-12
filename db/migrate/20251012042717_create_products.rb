@@ -13,5 +13,6 @@ class CreateProducts < ActiveRecord::Migration[8.0]
       t.timestamps
     end
     add_index :products, :brand
+    add_foreign_key :products, :categories, column: :category_id
   end
 end

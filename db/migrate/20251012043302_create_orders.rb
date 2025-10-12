@@ -9,6 +9,7 @@ class CreateOrders < ActiveRecord::Migration[8.0]
       table.timestamps
     end
     add_index :orders, :user_id
+    add_foreign_key :orders, :users, column: :user_id
   end
 
   def add_reference_columns(table)
