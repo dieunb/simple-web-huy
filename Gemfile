@@ -3,15 +3,16 @@
 source 'https://rubygems.org'
 
 gem 'activerecord'
+gem 'dotenv'
 gem 'erb'
+gem 'faker'
+gem 'otr-activerecord'
 gem 'pg'
 gem 'puma'
 gem 'rack'
 gem 'rackup'
-gem 'tilt'
 gem 'rake'
-gem 'otr-activerecord'
-gem 'faker' 
+gem 'tilt'
 
 group :development, :test do
   gem 'byebug'

@@ -1,0 +1,21 @@
+development:
+  adapter: "postgresql"
+  host: "localhost"
+  port: 5432
+  database: "frack_mvc"
+  username: <%= ENV['DB_USERNAME'] %>  
+  password: <%= ENV['DB_PASSWORD'] %>
+staging: 
+  adapter: "postgresql"
+  host: "localhost"
+  port: 5432
+  database: "frack_mvc"
+  username: <%= ENV['DB_USERNAME'] %>  
+  password: <%= ENV['DB_PASSWORD'] %>
+production:
+  adapter: "postgresql"
+  host: "localhost"
+  port: 5432
+  database: "frack_mvc"
+  username: <%= ENV['DB_USERNAME'] %>  
+  password: <%= ENV['DB_PASSWORD'] %>
