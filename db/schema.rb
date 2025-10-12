@@ -12,9 +12,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 20_251_012_042_112) do
+ActiveRecord::Schema[8.0].define(version: 20_251_012_042_717) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'pg_catalog.plpgsql'
+
+  create_table 'products', force: :cascade do |t|
+    t.string 'name'
+    t.string 'brand'
+    t.integer 'category_id'
+    t.integer 'year'
+    t.decimal 'price'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['brand'], name: 'index_products_on_brand'
+  end
 
   create_table 'users', force: :cascade do |t|
     t.string 'email', limit: 255, null: false
