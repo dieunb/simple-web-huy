@@ -1,0 +1,10 @@
+# Default RuboCop configuration
+AllCops:
+  TargetRubyVersion: 3.2
+  NewCops: enable
+
+# Exclude schema.rb from BlockLength checks
+Metrics/BlockLength:
+  Exclude:
+    - 'db/schema.rb'
+    - 'db/migrate/*'

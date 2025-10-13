@@ -40,14 +40,3 @@ jobs:
         reporter: github-pr-review # Default is github-pr-check
         skip_install: true
         use_bundler: true
-
-# Default RuboCop configuration
-AllCops:
-  TargetRubyVersion: 3.2
-  NewCops: enable
-
-# Exclude schema.rb from BlockLength checks
-Metrics/BlockLength:
-  Exclude:
-    - 'db/schema.rb'
-    - 'db/migrate/*'
