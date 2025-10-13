@@ -10,6 +10,10 @@
 /test/version_tmp/
 /tmp/
 
+# Environment variables
+.env
+.env.*
+
 # Used by dotenv library to load environment variables.
 # .env
 
@@ -33,13 +37,13 @@ build-iPhoneSimulator/
 # vendor/Pods/
 
 ## Documentation cache and generated files:
-/.yardoc/
-/_yardoc/
-/doc/
-/rdoc/
+.yardoc/
+_yardoc/
+doc/
+rdoc/
 
 ## Environment normalization:
-/.bundle/
+.bundle/
 /vendor/bundle
 /lib/bundler/man/
 
