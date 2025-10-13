@@ -8,3 +8,12 @@ Metrics/BlockLength:
   Exclude:
     - 'db/schema.rb'
     - 'db/migrate/*'
+
+Naming/BlockForwarding:
+  Enabled: false
+
+Style/ArgumentsForwarding:
+  Enabled: false
+
+Style/HashConversion:
+  Enabled: false
