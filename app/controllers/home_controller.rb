@@ -2,7 +2,7 @@
 
 # HomeController to handle the home page rendering
 class HomeController < Frack::BaseController
-  def index
+  def show
     render 'home/show'
   end
 end
