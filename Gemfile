@@ -13,6 +13,8 @@ gem 'rack'
 gem 'rackup'
 gem 'rake'
 gem 'tilt'
+gem 'rack-session'
+gem 'bcrypt'
 
 group :development, :test do
   gem 'byebug'
