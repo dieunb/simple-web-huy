@@ -33,6 +33,7 @@ class UsersController < Frack::BaseController
   end
 
   def signup_success(session)
+    session['user_id'] = @user.id
     session['flash'] = 'Sign up successful'
     [[], 302, { 'location' => '/' }]
   end
