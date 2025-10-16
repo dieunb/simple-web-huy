@@ -1,0 +1,36 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="text-center py-5">
+        <h1 class="display-5 fw-bold">Create New Account</h1>
+        <p class="lead mt-3">Join our e-commerce platform to start shopping</p>
+      </div>
+
+      <form action="/users/sign_up" method="POST">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="password_confirmation" class="form-label">Confirm Password</label>
+          <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary">Sign Up</button>
+          <a href="/" class="btn btn-outline-secondary">Back to Home</a>
+        </div>
+      </form>
+
+      <div class="text-center mt-4">
+        <p class="text-muted">Already have an account? <a href="/sign_in">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+</div>
