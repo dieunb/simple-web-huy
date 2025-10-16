@@ -4,9 +4,13 @@ $LOAD_PATH.unshift << '.'
 
 require 'lib/frack'
 require 'app/controllers/home_controller'
+require 'app/controllers/users_controller'
+require 'app/models/user'
 
 use Frack::Router do
   get '/' => 'home#show'
+  get '/sign_up' => 'users#new'
+  post '/sign_up' => 'users#create'
 end
 
 run Frack::Application
