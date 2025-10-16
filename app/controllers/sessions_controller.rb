@@ -10,8 +10,11 @@ class SessionsController < Frack::BaseController
     email = request.params['email']
     password = request.params['password']
     User.find_by(email: email)
-    return login_success(authenticated_user) if authenticated_user
-    login_failed
+    if user&.authenticate(password)
+      login_success(user)
+    else
+      login_failed
+    end
   end
 
   def destroy

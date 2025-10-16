@@ -8,10 +8,10 @@ require 'app/controllers/users_controller'
 require 'app/models/user'
 require 'rack/session/cookie'
 
-use Rack::Session::Cookie, 
-  key:'rack.session',
-  path: '/',
-  secret: 'your_secret_key_0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+use Rack::Session::Cookie,
+    key: 'rack.session',
+    path: '/',
+    secret: ENV.fetch('SESSION_SECRET', nil)
 
 use Frack::Router do
   get '/' => 'home#show'
