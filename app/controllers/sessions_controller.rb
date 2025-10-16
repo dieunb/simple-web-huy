@@ -3,13 +3,13 @@
 # Controller for managing user sessions (login/logout)
 class SessionsController < Frack::BaseController
   def new
-    [[], 302, { 'location' => '/sign_in' }]
+    render 'sessions/new'
   end
 
   def create
     email = request.params['email']
     password = request.params['password']
-    User.find_by(email: email)
+    user = User.find_by(email: email)
     if user&.authenticate(password)
       login_success(user)
     else
