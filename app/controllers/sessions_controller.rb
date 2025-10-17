@@ -23,6 +23,8 @@ class SessionsController < Frack::BaseController
     [[], 302, { 'location' => '/' }]
   end
 
+  private
+
   def login_success(user)
     request.session['user_id'] = user.id
     request.session['flash'] = 'Login successful!'
