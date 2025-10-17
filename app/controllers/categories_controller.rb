@@ -3,6 +3,7 @@
 # Controller for Category
 class CategoriesController < Frack::BaseController
   include Pagy::Backend
+
   def index
     unless current_user
       request.session['flash'] = 'You must sign in to continue'

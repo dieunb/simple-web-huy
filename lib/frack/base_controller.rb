@@ -4,6 +4,7 @@ module Frack
   # Base controller class that provides common functionality for all controllers
   class BaseController
     attr_reader :request, :session, :current_user, :flash_message
+
     include Pagy::Backend
     include Pagy::Frontend
 
