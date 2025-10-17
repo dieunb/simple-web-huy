@@ -13,6 +13,10 @@ class CategoriesController < Frack::BaseController
   end
 
   def new
+    unless current_user
+      request.session['flash'] = 'You must sign in to continue'
+      return [[], 302, { 'location' => '/' }]
+    end
     render 'categories/new'
   end
 
