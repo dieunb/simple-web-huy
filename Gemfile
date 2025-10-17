@@ -16,6 +16,7 @@ gem 'rack-session'
 gem 'rackup'
 gem 'rake'
 gem 'tilt'
+gem 'erubi'
 
 group :development, :test do
   gem 'byebug'
