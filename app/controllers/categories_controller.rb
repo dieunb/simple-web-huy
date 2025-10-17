@@ -2,13 +2,15 @@
 
 # Controller for Category
 class CategoriesController < Frack::BaseController
+  include Pagy::Backend
   def index
     unless current_user
       request.session['flash'] = 'You must sign in to continue'
       return [[], 302, { 'location' => '/' }]
     end
 
-    @categories = Category.order(:id).page(request.params['page']).per(25)
+    page = request.params['page'] || 1
+    @pagy, @categories = pagy(Category.order(:id), page: page)
     render 'categories/index'
   end
 
