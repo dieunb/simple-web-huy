@@ -25,7 +25,7 @@ use Frack::Router do
   get '/sign_in' => 'sessions#new'
   post '/sign_in' => 'sessions#create'
   delete '/sign_out' => 'sessions#destroy'
-   get '/categories' => 'categories#index'
+  get '/categories' => 'categories#index'
   get '/categories/new' => 'categories#new'
   post '/categories' => 'categories#create'
 end

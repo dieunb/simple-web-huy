@@ -5,10 +5,10 @@
   </div>
 
   <% if @categories.any? %> 
-  <div class="row"> 
-    <% @categories.each do |category| %> 
-      <div class="col-md-4 col-sm-6 mb-3"> 
-        <div class="card h-100"> 
+    <div class="row"> 
+      <% @categories.each do |category| %> 
+        <div class="col-md-4 col-sm-6 mb-3"> 
+          <div class="card h-100"> 
           <div class="card-body"> 
             <h5 class="card-title"><%= category.name %></h5> 
           </div> 
