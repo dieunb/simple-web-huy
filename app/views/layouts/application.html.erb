@@ -29,9 +29,14 @@
             </li>
           </ul>
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <% if defined?(current_user) && current_user %>
+            <% if current_user %>
               <li class="nav-item">
-                <a class="nav-link" href="/sign_out">Sign out</a>
+                <form action="/sign_out" method="POST" style="display: inline;">
+                  <input type="hidden" name="_method" value="DELETE">
+                  <button type="submit" class="nav-link btn btn-link" style="border: none; background: none;">
+                    Sign out
+                  </button>
+                </form>
               </li>
             <% else %>
               <li class="nav-item">
@@ -48,8 +53,9 @@
 
     <div class="container py-4">
       <% if instance_variable_defined?(:@flash_message) && @flash_message %>
-        <div class="alert alert-info" role="alert">
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
           <%= @flash_message %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       <% end %>
       
