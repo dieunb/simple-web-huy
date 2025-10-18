@@ -5,6 +5,9 @@ module Frack
   class BaseController
     attr_reader :request, :session, :current_user, :flash_message
 
+    include Pagy::Backend
+    include Pagy::Frontend
+
     def initialize(env)
       @request = Rack::Request.new(env)
       @flash_message = request.session&.delete('flash')
@@ -18,7 +21,8 @@ module Frack
     end
 
     def render_template(path, &block)
-      Tilt.new(file(path)).render(self, &block)
+      template = Tilt::ErubiTemplate.new(file(path))
+      template.render(self, &block)
     end
 
     def file(path)

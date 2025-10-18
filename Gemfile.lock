@@ -31,6 +31,7 @@ GEM
     dotenv (3.1.8)
     drb (2.2.3)
     erb (5.0.2)
+    erubi (1.13.1)
     faker (3.5.2)
       i18n (>= 1.8.11, < 2)
     i18n (1.14.7)
@@ -43,6 +44,7 @@ GEM
     nio4r (2.7.4)
     otr-activerecord (2.5.0)
       activerecord (>= 6.0, < 8.1)
+    pagy (9.4.0)
     parallel (1.27.0)
     parser (3.3.9.0)
       ast (~> 2.4.1)
@@ -97,8 +99,10 @@ DEPENDENCIES
   byebug
   dotenv
   erb
+  erubi
   faker
   otr-activerecord
+  pagy
   pg
   puma
   rack
