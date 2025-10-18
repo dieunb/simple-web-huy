@@ -31,6 +31,8 @@ class CategoriesController < Frack::BaseController
     [[], 302, { 'location' => location }]
   end
 
+  private
+  
   def creation_outcome(name)
     if name.to_s.strip.empty?
       ['Name cannot be blank', '/categories/new']
