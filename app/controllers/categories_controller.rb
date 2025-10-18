@@ -36,7 +36,7 @@ class CategoriesController < Frack::BaseController
   def creation_outcome(name)
     if name.to_s.strip.empty?
       ['Name cannot be blank', '/categories/new']
-    elsif Category.new('name' => name).save
+    elsif Category.new(name: name).save
       ['Category created', '/categories']
     else
       ['Create failed', '/categories/new']
