@@ -2,7 +2,6 @@
 
 # Controller for Category
 class CategoriesController < Frack::BaseController
-  include Pagy::Backend
 
   def index
     unless current_user
