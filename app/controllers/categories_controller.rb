@@ -32,7 +32,7 @@ class CategoriesController < Frack::BaseController
   end
 
   private
-  
+
   def creation_outcome(name)
     if name.to_s.strip.empty?
       ['Name cannot be blank', '/categories/new']

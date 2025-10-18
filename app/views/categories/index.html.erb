@@ -4,25 +4,29 @@
     <a href="/categories/new" class="btn btn-success">New Category</a>
   </div>
 
-  <% if @categories.any? %> 
-    <div class="row"> 
-      <% @categories.each do |category| %> 
-        <div class="col-md-4 col-sm-6 mb-3"> 
-          <div class="card h-100"> 
-          <div class="card-body"> 
-            <h5 class="card-title"><%= category.name %></h5> 
-          </div> 
-        </div> 
-      </div> 
-    <% end %> 
-  </div> 
-   <nav class="d-flex justify-content-center mt-3" aria-label="Pages">
+  <% if @categories.any? %>
+    
+    <div class="row">
+      <% @categories.each do |category| %>
+        <div class="col-md-4 col-sm-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title"><%= category.name %></h5>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <nav class="d-flex justify-content-center mt-3" aria-label="Pages">
       <%= pagy_bootstrap_nav(@pagy) if @pagy&.pages.to_i > 1 %>
     </nav>
-<% else %> 
-  <div class="alert alert-warning text-center py-4"> 
-    <h4 class="mb-0">No categories found!</h4> 
-  </div> 
-<% end %>
-</div>
 
+  <% else %>
+    
+    <div class="alert alert-warning text-center py-4">
+      <h4 class="mb-0">No categories found!</h4>
+    </div>
+    
+  <% end %>
+</div>
