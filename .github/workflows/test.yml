@@ -1,0 +1,24 @@
+name: Ruby RSpec CI
+
+on:
+  push:
+    branches: [ main ]
+    pull_request:
+      branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@0481980f17b760ef6bca5e8c55809102a0af1e5a # v1.263.0
+      with:
+        ruby-version: '3.2.0'
+        bundler-cache: true
+
+    - name: Run RSpec tests
+      run: bundle exec rspec
