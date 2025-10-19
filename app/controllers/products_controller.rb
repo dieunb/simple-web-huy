@@ -8,7 +8,8 @@ class ProductsController < Frack::BaseController
       return [[], 302, { 'location' => '/' }]
     end
 
-    @products = Product.all
+    page = request.params['page'] || 1
+    @pagy, @products = pagy(Product.includes(:category).order(:id), page: page)
     render 'products/index'
   end
 
