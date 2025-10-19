@@ -1,0 +1,33 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+          <h3 class="mb-0">Create a New Category</h3>
+        </div>
+        <div class="card-body p-4">
+          <form action="/categories" method="POST" novalidate>
+            
+            <div class="mb-4">
+              <label for="name" class="form-label fs-5">Name</label>
+              <input type="text" 
+                     class="form-control form-control-lg" 
+                     id="name" 
+                     name="name" 
+                     required 
+                     placeholder="e.g., Web Development">
+            </div>
+            
+            <div class="d-grid mb-3">
+              <button type="submit" class="btn btn-primary btn-lg fw-bold">Create Category</button>
+            </div>
+          </form>
+          
+          <div class="text-center">
+            <a href="/categories/index" class="btn btn-link text-secondary">Back to Categories</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
