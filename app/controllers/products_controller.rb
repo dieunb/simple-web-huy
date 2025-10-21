@@ -18,22 +18,34 @@ class ProductsController < Frack::BaseController
   end
 
   def create
-    product_params = request.params.slice(
+    new_product = Product.new(product_params)
+
+    if new_product.save
+      handle_successful_creation
+    else
+      handle_failed_creation
+    end
+  end
+
+  private
+
+  def product_params
+    request.params.slice(
       'name',
       'brand',
       'category_id',
       'year',
       'price'
     )
+  end
 
-    new_product = Product.new(product_params)
+  def handle_successful_creation
+    request.session['flash'] = 'Product created'
+    [[], 302, { 'location' => '/products' }]
+  end
 
-    if new_product.save
-      request.session['flash'] = 'Product created'
-      [[], 302, { 'location' => '/products' }]
-    else
-      request.session['flash'] = 'Create failed'
-      [[], 302, { 'location' => '/products/new' }]
-    end
+  def handle_failed_creation
+    request.session['flash'] = 'Create failed'
+    [[], 302, { 'location' => '/products/new' }]
   end
 end
