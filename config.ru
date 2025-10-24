@@ -9,7 +9,9 @@ require 'app/controllers/home_controller'
 require 'app/controllers/users_controller'
 require 'app/controllers/sessions_controller'
 require 'app/controllers/categories_controller'
+require 'app/controllers/products_controller'
 require 'app/models/category'
+require 'app/models/product'
 require 'app/models/user'
 require 'rack/session/cookie'
 
@@ -28,6 +30,9 @@ use Frack::Router do
   get '/categories' => 'categories#index'
   get '/categories/new' => 'categories#new'
   post '/categories' => 'categories#create'
+  get '/products' => 'products#index'
+  get '/products/new' => 'products#new'
+  post '/products' => 'products#create'
 end
 
 use OTR::ActiveRecord::ConnectionManagement
