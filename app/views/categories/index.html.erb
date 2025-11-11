@@ -11,7 +11,11 @@
         <div class="col-md-4 col-sm-6 mb-3">
           <div class="card h-100">
             <div class="card-body">
-              <h5 class="card-title"><%= category.name %></h5>
+              <h5 class="card-title">
+                <a href="/categories/show?id=<%= category.id %>" class="text-decoration-none">
+                  <%= category.name %>
+                </a>
+              </h5>
             </div>
           </div>
         </div>

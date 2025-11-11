@@ -3,13 +3,9 @@
 # Controller for Product
 class ProductsController < Frack::BaseController
   def index
-    unless current_user
-      request.session['flash'] = 'You must sign in to continue'
-      return [[], 302, { 'location' => '/' }]
-    end
+    return require_authentication unless current_user
 
-    page = request.params['page'] || 1
-    @pagy, @products = pagy(Product.includes(:category).order(:id), page: page)
+    @pagy, @products = setup_pagination(Product.includes(:category).order(:id))
     render 'products/index'
   end
 
