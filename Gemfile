@@ -19,6 +19,7 @@ gem 'rake'
 gem 'tilt'
 
 group :development, :test do
+  gem 'rspec'
   gem 'byebug'
   gem 'rubocop'
 end
