@@ -36,12 +36,13 @@ class CategoriesController < Frack::BaseController
     return require_authentication unless current_user
 
     return category_not_found unless find_category
+
     category_name = @category.name
-    if @category.destroy
-      request.session['flash'] = "Category '#{category_name}' deleted"
-    else
-      request.session['flash'] = "Failed to delete"
-    end
+    request.session['flash'] = if @category.destroy
+                                 "Category '#{category_name}' deleted"
+                               else
+                                 'Failed to delete'
+                               end
 
     [[], 302, { 'location' => '/categories' }]
   end
