@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: simpleweb-db
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+        - postgres_data:/var/lib/postgresql/data
+    ports:
+        - "5432:5432"
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+
+  web: 
+    build: .
+    container_name: simpleweb-app
+    command: bash -c "bundle exec rake db:migrate && bundle exec rackup -o 0.0.0.0 -p 9292"
+    volumes:
+      - .:/app
+    ports:
+      - "9292:9292"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      RACK_ENV: production
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: db
+      DB_PORT: 5432
+      SESSION_SECRET: ${SESSION_SECRET}
+
+volumes:
+  postgres_data:
