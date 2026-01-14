@@ -49,7 +49,7 @@ services:
   worker:
     build: .
     container_name: simpleweb-worker
-    command: bash -c "bundle exec sidekiq -r ./config.ru"
+    command: bash -c "bundle exec sidekiq -r ./config/sidekiq_loader.rb"
     volumes:
       - .:/app
     depends_on:
