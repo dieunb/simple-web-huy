@@ -6,7 +6,6 @@ require 'app/models/category'
 require 'app/models/product'
 require 'faker'
 
-
 100.times do
   Category.create(name: Faker::Commerce.brand)
 end

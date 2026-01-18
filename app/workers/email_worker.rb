@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sidekiq'
 
 # Background worker for sending emails asynchronously
@@ -14,4 +16,3 @@ class EmailWorker
     EmailService.send_welcome_email(user)
   end
 end
-

@@ -11,41 +11,46 @@ class EmailService
     # @return [Boolean] true if email sent successfully, false otherwise
     def send_welcome_email(user)
       configure_smtp
-
-      # Generate email body before creating Mail object
-      email_body = generate_welcome_email_body(user)
-
-      mail = Mail.new do
-        from    ENV.fetch('SMTP_FROM_EMAIL', 'noreply@example.com')
-        to      user.email
-        subject 'Welcome to SimpleWeb - Sign Up Successful!'
-        body    email_body
-      end
-
-      mail.deliver!
+      build_welcome_mail(user).deliver!
       true
     rescue StandardError => e
-      # Log error in production, for now just print
-      puts "EmailService Error: #{e.message}"
-      puts e.backtrace.first(5).join("\n")
+      log_error(e)
       false
     end
 
     private
 
+    def build_welcome_mail(user)
+      email_body = generate_welcome_email_body(user)
+
+      Mail.new do
+        from    ENV.fetch('SMTP_FROM_EMAIL', 'noreply@example.com')
+        to      user.email
+        subject 'Welcome to SimpleWeb - Sign Up Successful!'
+        body    email_body
+      end
+    end
+
+    def log_error(error)
+      puts "EmailService Error: #{error.message}"
+      puts error.backtrace.first(5).join("\n")
+    end
+
     # Configure SMTP settings from environment variables
     def configure_smtp
-      Mail.defaults do
-        delivery_method :smtp, {
-          address:              ENV.fetch('SMTP_HOST', 'smtp.gmail.com'),
-          port:                 ENV.fetch('SMTP_PORT', '587').to_i,
-          domain:               ENV.fetch('SMTP_DOMAIN', 'gmail.com'),
-          user_name:            ENV.fetch('SMTP_USER', nil),
-          password:             ENV.fetch('SMTP_PASSWORD', nil),
-          authentication:       :plain,
-          enable_starttls_auto: true
-        }
-      end
+      Mail.defaults { delivery_method :smtp, smtp_settings }
+    end
+
+    def smtp_settings
+      {
+        address: ENV.fetch('SMTP_HOST', 'smtp.gmail.com'),
+        port: ENV.fetch('SMTP_PORT', '587').to_i,
+        domain: ENV.fetch('SMTP_DOMAIN', 'gmail.com'),
+        user_name: ENV.fetch('SMTP_USER', nil),
+        password: ENV.fetch('SMTP_PASSWORD', nil),
+        authentication: :plain,
+        enable_starttls_auto: true
+      }
     end
 
     # Generate welcome email body
