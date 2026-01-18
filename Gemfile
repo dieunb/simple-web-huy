@@ -17,6 +17,8 @@ gem 'rack-session'
 gem 'rackup'
 gem 'rake'
 gem 'tilt'
+gem 'grpc'
+gem 'grpc-tools'
 
 group :development, :test do
   gem 'byebug'
