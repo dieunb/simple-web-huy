@@ -16,11 +16,45 @@
                   <%= category.name %>
                 </a>
               </h5>
+
+              <div class="mt-2">
+                <button type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  data-bs-toggle="modal" 
+                        data-bs-target="#deleteModal-<%= category.id %>">
+                  Delete category
+                </button>
+
+            <div class="modal fade" id="deleteModal-<%= category.id %>" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        Are you sure you want to delete <strong><%= category.name %></strong>?<br>
+                        This action cannot be undone.
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+                        <form action="/categories?id=<%= category.id %>" method="POST" style="display: inline;">
+                          <input type="hidden" name="_method" value="DELETE">
+                          <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       <% end %>
     </div>
+
 
     <nav class="d-flex justify-content-center mt-3" aria-label="Pages">
       <%= pagy_bootstrap_nav(@pagy) if @pagy&.pages.to_i > 1 %>

@@ -31,6 +31,7 @@ use Frack::Router do
   get '/categories/new' => 'categories#new'
   post '/categories' => 'categories#create'
   get '/categories/show' => 'categories#show'
+  delete '/categories' => 'categories#destroy'
   get '/products' => 'products#index'
   get '/products/new' => 'products#new'
   post '/products' => 'products#create'
