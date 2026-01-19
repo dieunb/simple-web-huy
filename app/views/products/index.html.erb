@@ -22,6 +22,7 @@
                 <th scope="col" class="text-center">Year</th>
                 <th scope="col" class="text-end">Price</th>
                 <th scope="col" class="text-center">Created At</th>
+                <th scope="col" class="text-center">Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -65,6 +66,36 @@
                     <small class="text-muted">
                       <%= p.created_at.strftime("%m/%d/%Y") %>
                     </small>
+                  </td>
+                  <td class="text-center">
+                    <div class="mt-2">
+                      <button type="button" 
+                              class="btn btn-sm btn-outline-danger" 
+                              data-bs-toggle="modal" 
+                              data-bs-target="#deleteModal-<%= p.id %>">
+                        Delete product
+                      </button>
+                    </div>
+                    <div class="modal fade" id="deleteModal-<%= p.id %>" tabindex="-1" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Confirm Deletion</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            Are you sure you want to delete <strong><%= p.name %></strong>?<br>
+                            This action cannot be undone.
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form action="/products?id=<%= p.id %>" method="POST" style="display: inline;">
+                              <input type="hidden" name="_method" value="DELETE">
+                              <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               <% end %>
