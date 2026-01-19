@@ -8,8 +8,6 @@ services:
       POSTGRES_DB: ${DB_NAME}
     volumes:
         - postgres_data:/var/lib/postgresql/data
-    ports:
-        - "5432:5432"
     healthcheck:
         test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
         interval: 10s
@@ -19,11 +17,12 @@ services:
   web: 
     build: .
     container_name: simpleweb-app
-    command: bash -c "bundle exec rake db:migrate && bundle exec rackup -o 0.0.0.0 -p 9292"
+    #command: bash -c "bundle exec rake db:migrate && bundle exec rackup -o 0.0.0.0 -p 9292"
+    command: bash -c "bundle exec rake db:migrate && bundle exec puma -C config/puma.rb"
     volumes:
       - .:/app
     ports:
-      - "9292:9292"
+      - "9292:3000"
     depends_on:
       db:
         condition: service_healthy
@@ -35,6 +34,41 @@ services:
       DB_HOST: db
       DB_PORT: 5432
       SESSION_SECRET: ${SESSION_SECRET}
+      REDIS_URL: redis://redis:6379/0
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_DOMAIN: ${SMTP_DOMAIN:-gmail.com}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
+
+  redis:
+    image: redis:7-alpine
+    container_name: simpleweb-redis
+
+  worker:
+    build: .
+    container_name: simpleweb-worker
+    command: bash -c "bundle exec sidekiq -r ./config/sidekiq_loader.rb"
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+    environment:
+      RACK_ENV: production
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: db
+      DB_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_DOMAIN: ${SMTP_DOMAIN:-gmail.com}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
 
 volumes:
   postgres_data:

@@ -13,6 +13,9 @@ require 'app/controllers/products_controller'
 require 'app/models/category'
 require 'app/models/product'
 require 'app/models/user'
+require 'app/services/email_service'
+require 'app/workers/email_worker'
+require 'config/initializers/sidekiq'
 require 'rack/session/cookie'
 
 use Rack::Session::Cookie,
