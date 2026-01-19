@@ -4,7 +4,7 @@ require 'mail'
 
 # Service class for sending emails
 class EmailService
-  def send_welcome_email(user)
+  def self.send_welcome_email(user)
     configure_smtp
     build_mail(user).deliver!
     true
@@ -16,7 +16,7 @@ class EmailService
 
   private
 
-  def configure_smtp
+  def self.configure_smtp
     settings = smtp_settings
 
     Mail.defaults do
@@ -24,7 +24,7 @@ class EmailService
     end
   end
 
-  def build_mail(user)
+  def self.build_mail(user)
     email_body = generate_welcome_email_body(user)
     Mail.new do
       from    ENV.fetch('SMTP_FROM_EMAIL', 'noreply@example.com')
@@ -34,7 +34,7 @@ class EmailService
     end
   end
 
-  def smtp_settings
+  def self.smtp_settings
     {
       address: ENV.fetch('SMTP_HOST', 'smtp.gmail.com'),
       port: ENV.fetch('SMTP_PORT', '587').to_i,
@@ -46,7 +46,7 @@ class EmailService
     }
   end
 
-  def generate_welcome_email_body(user)
+  def self.generate_welcome_email_body(user)
     <<~EMAIL
       Hello #{user.email},
       Welcome to SimpleWeb!
