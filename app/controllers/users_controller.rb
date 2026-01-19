@@ -35,6 +35,8 @@ class UsersController < Frack::BaseController
   def signup_success(session)
     session['user_id'] = @user.id
     session['flash'] = 'Sign up successful'
+    # Send welcome email asynchronously via Sidekiq
+    EmailWorker.perform_async(@user.id)
     [[], 302, { 'location' => '/' }]
   end
 

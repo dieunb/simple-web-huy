@@ -1,21 +1,21 @@
 development:
   adapter: postgresql
-  host: localhost
-  port: 5432
-  database: simpleweb
-  username: <%= ENV['DB_USERNAME'] %>  
+  host: <%= ENV['DB_HOST'] %>
+  port: <%= ENV['DB_PORT'] %>
+  database: <%= ENV['DB_NAME'] %>
+  username: <%= ENV['DB_USERNAME'] %>
   password: <%= ENV['DB_PASSWORD'] %>
-staging: 
+staging:
   adapter: postgresql
-  host: localhost
-  port: 5432
-  database: simpleweb
-  username: <%= ENV['DB_USERNAME'] %>  
+  host: <%= ENV['DB_HOST'] %>
+  port: <%= ENV['DB_PORT'] %>
+  database: <%= ENV['DB_NAME'] %>
+  username: <%= ENV['DB_USERNAME'] %>
   password: <%= ENV['DB_PASSWORD'] %>
 production:
   adapter: postgresql
-  host: localhost
-  port: 5432
-  database: simpleweb
-  username: <%= ENV['DB_USERNAME'] %>  
+  host: <%= ENV['DB_HOST'] %>
+  port: <%= ENV['DB_PORT'] %>
+  database: <%= ENV['DB_NAME'] %>
+  username: <%= ENV['DB_USERNAME'] %>
   password: <%= ENV['DB_PASSWORD'] %>
