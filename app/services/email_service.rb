@@ -14,8 +14,6 @@ class EmailService
     false
   end
 
-  private
-
   def self.configure_smtp
     settings = smtp_settings
 
