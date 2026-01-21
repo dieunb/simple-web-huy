@@ -7,10 +7,6 @@ class EmailService
   def self.send_welcome_email(user)
     configure_smtp
     build_mail(user).deliver!
-  rescue StandardError => e
-    puts "EmailService Error: #{e.message}"
-    puts e.backtrace.first(5).join("\n")
-    false
   end
 
   def self.configure_smtp
