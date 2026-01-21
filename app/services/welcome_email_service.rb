@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'mail'
+require_relative 'app_config'
 
 # Service class for sending welcome emails
 class WelcomeEmailService
@@ -20,7 +21,7 @@ class WelcomeEmailService
   def self.build_mail(user)
     email_body = generate_welcome_email_body(user)
     Mail.new do
-      from    ENV.fetch('SMTP_FROM_EMAIL', 'noreply@example.com')
+      from    AppConfig.smtp_from_email
       to      user.email
       subject 'Welcome to Ecommerce-Web - Sign Up Successful!'
       body    email_body
@@ -28,15 +29,7 @@ class WelcomeEmailService
   end
 
   def self.smtp_settings
-    {
-      address: ENV.fetch('SMTP_HOST', 'smtp.gmail.com'),
-      port: ENV.fetch('SMTP_PORT', '587').to_i,
-      domain: ENV.fetch('SMTP_DOMAIN', 'gmail.com'),
-      user_name: ENV.fetch('SMTP_USER', nil),
-      password: ENV.fetch('SMTP_PASSWORD', nil),
-      authentication: :plain,
-      enable_starttls_auto: true
-    }
+    AppConfig.smtp_settings
   end
 
   def self.generate_welcome_email_body(user)
@@ -45,4 +38,3 @@ class WelcomeEmailService
     template.result_with_hash(user: user)
   end
 end
-
