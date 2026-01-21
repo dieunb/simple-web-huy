@@ -10,6 +10,6 @@ class EmailWorker
     user = User.find_by(id: user_id)
     return unless user
 
-    EmailService.send_welcome_email(user)
+    WelcomeEmailService.send_welcome_email(user)
   end
 end

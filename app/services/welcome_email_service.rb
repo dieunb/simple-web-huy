@@ -2,8 +2,8 @@
 
 require 'mail'
 
-# Service class for sending emails
-class EmailService
+# Service class for sending welcome emails
+class WelcomeEmailService
   def self.send_welcome_email(user)
     configure_smtp
     build_mail(user).deliver!
@@ -22,7 +22,7 @@ class EmailService
     Mail.new do
       from    ENV.fetch('SMTP_FROM_EMAIL', 'noreply@example.com')
       to      user.email
-      subject 'Welcome to SimpleWeb - Sign Up Successful!'
+      subject 'Welcome to Ecommerce-Web - Sign Up Successful!'
       body    email_body
     end
   end
@@ -40,13 +40,9 @@ class EmailService
   end
 
   def self.generate_welcome_email_body(user)
-    <<~EMAIL
-      Hello #{user.email},
-      Welcome to SimpleWeb!
-      Thank you for signing up. Your account has been successfully created.
-      We're excited to have you on board!
-      Best regards,
-      The SimpleWeb Team
-    EMAIL
+    template_path = File.join(__dir__, '..', 'views', 'emails', 'welcome.html.erb')
+    template = ERB.new(File.read(template_path))
+    template.result_with_hash(user: user)
   end
 end
+
