@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package simpleweb;
+
+service WorkerService {
+  rpc ProcessJob (JobRequest) returns (JobReply) {}
+}
+
+message JobRequest {
+  string job_name = 1;
+  int32 job_id = 2;
+}
+
+message JobReply {
+  string message = 1;
+  bool success = 2;
+}
