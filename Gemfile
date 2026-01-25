@@ -8,6 +8,8 @@ gem 'dotenv'
 gem 'erb'
 gem 'erubi'
 gem 'faker'
+gem 'grpc'
+gem 'grpc-tools'
 gem 'mail'
 gem 'otr-activerecord'
 gem 'pagy'
@@ -20,11 +22,8 @@ gem 'rake'
 gem 'redis'
 gem 'sidekiq'
 gem 'tilt'
-gem 'grpc'
-gem 'grpc-tools'
 
 group :development, :test do
   gem 'byebug'
   gem 'rubocop'
 end
-
