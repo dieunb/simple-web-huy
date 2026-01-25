@@ -17,4 +17,10 @@ module AppConfig
       enable_starttls_auto: true
     }
   end
+
+  def self.setup_mail
+    Mail.defaults do
+      delivery_method :smtp, smtp_settings
+    end
+  end
 end

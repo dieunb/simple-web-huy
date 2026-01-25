@@ -20,9 +20,7 @@ OTR::ActiveRecord.configure_from_file! 'config/database.yml'
 OTR::ActiveRecord.establish_connection!
 
 # Configure SMTP globally at app startup
-Mail.defaults do
-  delivery_method :smtp, AppConfig.smtp_settings
-end
+AppConfig.setup_mail
 
 # Pagy defaults
 Pagy::DEFAULT[:items] = 10 # items per page
