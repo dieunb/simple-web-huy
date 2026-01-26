@@ -1,21 +1,31 @@
+default: &default
+  adapter: postgresql
+  pool: <%= ENV.fetch("MAX_THREADS") { 5 } %>
+  timeout: 5000
+
 development:
-  adapter: postgresql
-  host: localhost
-  port: 5432
-  database: simpleweb
-  username: <%= ENV['DB_USERNAME'] %>  
-  password: <%= ENV['DB_PASSWORD'] %>
-staging: 
-  adapter: postgresql
-  host: localhost
-  port: 5432
-  database: simpleweb
-  username: <%= ENV['DB_USERNAME'] %>  
-  password: <%= ENV['DB_PASSWORD'] %>
-production:
-  adapter: postgresql
-  host: localhost
-  port: 5432
-  database: simpleweb
-  username: <%= ENV['DB_USERNAME'] %>  
-  password: <%= ENV['DB_PASSWORD'] %>
+  <<: *default
+  database: <%= ENV.fetch('DB_NAME') { 'simpleweb_development' } %>
+  host:     <%= ENV.fetch('DB_HOST') { 'db' } %> 
+  port:     <%= ENV.fetch('DB_PORT') { '5432' } %>
+  username: <%= ENV.fetch('DB_USERNAME') { 'postgres' } %>
+  password: <%= ENV.fetch('DB_PASSWORD') { 'password' } %>
+
+test:
+  <<: *default
+  database: simpleweb_test
+  host:     <%= ENV.fetch('DB_HOST') { 'db' } %>
+  port:     <%= ENV.fetch('DB_PORT') { '5432' } %>
+  username: <%= ENV.fetch('DB_USERNAME') { 'postgres' } %>
+  password: <%= ENV.fetch('DB_PASSWORD') { 'password' } %>
+
+production: &production
+  <<: *default
+  database: <%= ENV.fetch('DB_NAME') %>
+  host:     <%= ENV.fetch('DB_HOST') %>
+  port:     <%= ENV.fetch('DB_PORT') %>
+  username: <%= ENV.fetch('DB_USERNAME') %>
+  password: <%= ENV.fetch('DB_PASSWORD') %>
+
+staging:
+  <<: *production
