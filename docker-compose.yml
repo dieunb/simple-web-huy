@@ -35,5 +35,9 @@ services:
       DB_PORT: 5432
       SESSION_SECRET: ${SESSION_SECRET}
 
+  redit:
+    image: redis:7-alpine
+    container_name: simpleweb-redis
+  
 volumes:
   postgres_data:
