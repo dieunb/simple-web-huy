@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'mail'
-require_relative '../config/app_config'
+require 'config/app_config'
 
 # Service class for sending welcome emails
 class WelcomeEmailService

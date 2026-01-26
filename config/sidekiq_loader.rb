@@ -13,7 +13,7 @@ require 'app/models/category'
 require 'app/models/product'
 
 # Load services
-require 'app/services/email_service'
+require 'app/services/welcome_email_service'
 
 # Load workers
 require 'app/workers/email_worker'
