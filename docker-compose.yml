@@ -35,7 +35,7 @@ services:
       DB_PORT: 5432
       SESSION_SECRET: ${SESSION_SECRET}
 
-  redit:
+  redis:
     image: redis:7-alpine
     container_name: simpleweb-redis
   
