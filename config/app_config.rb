@@ -19,6 +19,7 @@ module AppConfig
   end
 
   def self.setup_mail
+    smtp_settings = self.smtp_settings
     Mail.defaults do
       delivery_method :smtp, smtp_settings
     end
