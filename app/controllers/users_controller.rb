@@ -35,6 +35,7 @@ class UsersController < Frack::BaseController
   def signup_success(session)
     session['user_id'] = @user.id
     session['flash'] = 'Sign up successful'
+    EmailWorker.perform_async(@user.id)
     [[], 302, { 'location' => '/' }]
   end
 
