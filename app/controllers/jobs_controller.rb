@@ -3,11 +3,13 @@
 require 'json'
 require 'sidekiq'
 
+# JobsController handles background job management endpoints
 class JobsController < Frack::BaseController
   def health
     json_response({ status: 'ok' })
   end
 
+  # rubocop:disable Metrics/MethodLength
   def batch
     payload = parse_json_body
     count = (payload['count'] || 1000).to_i
@@ -21,15 +23,16 @@ class JobsController < Frack::BaseController
     end
 
     json_response({ message: "Enqueued #{count} jobs", count: count }, 201)
-  rescue => e
+  rescue StandardError => e
     json_response({ error: e.message }, 500)
   end
+  # rubocop:enable Metrics/MethodLength
 
   private
 
   def parse_json_body
     JSON.parse(request.body.read)
-  rescue
+  rescue StandardError
     {}
   end
 

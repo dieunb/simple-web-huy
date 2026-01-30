@@ -13,7 +13,7 @@ class EmailWorker
     if user
       WelcomeEmailService.send_welcome_email(user)
     else
-      sleep 1 
+      sleep 1
     end
   end
 end
