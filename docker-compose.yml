@@ -41,8 +41,9 @@ services:
   
   worker:
     build: .
-    container_name: simpleweb-worker
-    command: bash -c "bundle exec sidekiq -r ./config/sidekiq_loader.rb"
+    command: bundle exec sidekiq -C config/sidekiq.yml -r ./config/sidekiq_loader.rb
+    volumes:
+      - .:/app
     depends_on:
       - redis
       - db
