@@ -6,10 +6,14 @@ require 'sidekiq'
 class EmailWorker
   include Sidekiq::Worker
 
+  sidekiq_options retry: false
+
   def perform(user_id)
     user = User.find_by(id: user_id)
-    return unless user
-
-    WelcomeEmailService.send_welcome_email(user)
+    if user
+      WelcomeEmailService.send_welcome_email(user)
+    else
+      sleep 1 
+    end
   end
 end
