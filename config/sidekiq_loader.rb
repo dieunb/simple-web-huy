@@ -17,3 +17,4 @@ require 'app/services/welcome_email_service'
 
 # Load workers
 require 'app/workers/email_worker'
+require 'app/workers/urgent_worker'
