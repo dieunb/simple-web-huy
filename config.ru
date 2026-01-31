@@ -14,6 +14,9 @@ require 'app/models/category'
 require 'app/models/product'
 require 'app/models/user'
 require 'rack/session/cookie'
+require 'app/services/welcome_email_service'
+require 'app/workers/email_worker'
+require 'config/initializers/sidekiq'
 
 use Rack::Session::Cookie,
     key: 'rack.session',

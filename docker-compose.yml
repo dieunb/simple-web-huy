@@ -35,5 +35,25 @@ services:
       DB_PORT: 5432
       SESSION_SECRET: ${SESSION_SECRET}
 
+  redis:
+    image: redis:7-alpine
+    container_name: simpleweb-redis
+  
+  worker:
+    build: .
+    container_name: simpleweb-worker
+    command: bash -c "bundle exec sidekiq -r ./config/sidekiq_loader.rb"
+    depends_on:
+      - redis
+      - db
+    environment:
+      RACK_ENV: production
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: db
+      DB_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+
 volumes:
   postgres_data:
