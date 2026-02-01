@@ -7,7 +7,7 @@ class UrgentWorker
   include Sidekiq::Worker
 
   sidekiq_options queue: :critical, retry: false
-  def perform(_user_id)
-    logger.info("Processed urgent job for user: #{_user_id}")
+  def perform(user_id)
+    logger.info("Processed urgent job for user: #{user_id}")
   end
 end
