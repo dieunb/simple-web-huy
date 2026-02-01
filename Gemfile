@@ -22,7 +22,7 @@ gem 'sidekiq'
 gem 'tilt'
 
 group :development, :test do
-  gem 'rspec'
   gem 'byebug'
+  gem 'rspec'
   gem 'rubocop'
 end
