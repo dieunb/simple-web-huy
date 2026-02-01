@@ -8,8 +8,17 @@ require 'lib/frack'
 require 'app/controllers/home_controller'
 require 'app/controllers/users_controller'
 require 'app/controllers/sessions_controller'
+require 'app/controllers/categories_controller'
+require 'app/controllers/products_controller'
+require 'app/controllers/jobs_controller'
+require 'app/models/category'
+require 'app/models/product'
 require 'app/models/user'
 require 'rack/session/cookie'
+require 'app/services/welcome_email_service'
+require 'app/workers/email_worker'
+require 'app/workers/urgent_worker'
+require 'config/initializers/sidekiq'
 
 use Rack::Session::Cookie,
     key: 'rack.session',
@@ -23,6 +32,17 @@ use Frack::Router do
   get '/sign_in' => 'sessions#new'
   post '/sign_in' => 'sessions#create'
   delete '/sign_out' => 'sessions#destroy'
+  get '/categories' => 'categories#index'
+  get '/categories/new' => 'categories#new'
+  post '/categories' => 'categories#create'
+  get '/categories/show' => 'categories#show'
+  delete '/categories' => 'categories#destroy'
+  get '/products' => 'products#index'
+  get '/products/new' => 'products#new'
+  post '/products' => 'products#create'
+  delete '/products' => 'products#destroy'
+  get '/health' => 'jobs#health'
+  post '/jobs/batch' => 'jobs#batch'
 end
 
 use OTR::ActiveRecord::ConnectionManagement
