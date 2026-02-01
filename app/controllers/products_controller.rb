@@ -23,7 +23,33 @@ class ProductsController < Frack::BaseController
     end
   end
 
+  def destroy
+    return require_authentication unless current_user
+
+    return product_not_found unless find_product
+
+    product_name = @product.name
+    request.session['flash'] = if @product.destroy
+                                 "Product '#{product_name}' deleted"
+                               else
+                                 'Delete failed'
+                               end
+
+    [[], 302, { 'location' => '/products' }]
+  end
+
+
   private
+
+  def find_product
+    product_id = request.params['id']
+    @product = Product.find_by(id: product_id)
+  end
+
+  def product_not_found
+    request.session['flash'] = 'Product not found'
+    [[], 302, { 'location' => '/products' }]
+  end
 
   def product_params
     request.params.slice(
