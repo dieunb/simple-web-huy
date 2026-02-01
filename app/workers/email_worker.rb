@@ -12,8 +12,9 @@ class EmailWorker
     user = User.find_by(id: user_id)
     if user
       WelcomeEmailService.send_welcome_email(user)
+      logger.info("Sent welcome email success: #{user_id}")
     else
-      sleep 1
+      logger.info("User not found: #{user_id}")
     end
   end
 end

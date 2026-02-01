@@ -8,6 +8,6 @@ class UrgentWorker
 
   sidekiq_options queue: :critical, retry: false
   def perform(_user_id)
-    sleep 0.5
+    logger.info("Processed urgent job for user: #{_user_id}")
   end
 end
