@@ -13,9 +13,14 @@ require 'pagy'
 require 'pagy/extras/overflow'
 require 'pagy/extras/bootstrap'
 require 'dotenv/load'
+require 'mail'
+require_relative '../config/app_config'
 
 OTR::ActiveRecord.configure_from_file! 'config/database.yml'
 OTR::ActiveRecord.establish_connection!
+
+# Configure SMTP globally at app startup
+AppConfig.setup_mail
 
 # Pagy defaults
 Pagy::DEFAULT[:items] = 10 # items per page

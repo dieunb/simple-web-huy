@@ -10,10 +10,15 @@ require 'app/controllers/users_controller'
 require 'app/controllers/sessions_controller'
 require 'app/controllers/categories_controller'
 require 'app/controllers/products_controller'
+require 'app/controllers/jobs_controller'
 require 'app/models/category'
 require 'app/models/product'
 require 'app/models/user'
 require 'rack/session/cookie'
+require 'app/services/welcome_email_service'
+require 'app/workers/email_worker'
+require 'app/workers/urgent_worker'
+require 'config/initializers/sidekiq'
 
 use Rack::Session::Cookie,
     key: 'rack.session',
@@ -35,6 +40,8 @@ use Frack::Router do
   get '/products' => 'products#index'
   get '/products/new' => 'products#new'
   post '/products' => 'products#create'
+  get '/health' => 'jobs#health'
+  post '/jobs/batch' => 'jobs#batch'
 end
 
 use OTR::ActiveRecord::ConnectionManagement
