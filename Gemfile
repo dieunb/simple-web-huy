@@ -20,6 +20,8 @@ gem 'rake'
 gem 'redis'
 gem 'sidekiq'
 gem 'tilt'
+gem 'grpc'
+gem 'grpc-tools'
 
 group :development, :test do
   gem 'byebug'
