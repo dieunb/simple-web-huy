@@ -9,6 +9,11 @@ Metrics/BlockLength:
     - 'db/schema.rb'
     - 'db/migrate/*'
 
+# Exclude generated protobuf files from line length checks
+Layout/LineLength:
+  Exclude:
+    - 'grpc/*_pb.rb'
+
 Naming/BlockForwarding:
   Enabled: false
 
