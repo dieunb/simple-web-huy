@@ -35,8 +35,8 @@ class EmailWorker
   def fetch_user_via_grpc(user_id)
     logger.info("Calling gRPC for user: #{user_id}")
     host = ENV.fetch('GRPC_HOST', 'localhost:50051')
-    stub = GrpcUser::UserService::Stub.new(host, :this_channel_is_insecure)
-    response = stub.get_user(GrpcUser::GetUserRequest.new(user_id: user_id.to_i))
+    stub = SimpleWebRpc::UserService::Stub.new(host, :this_channel_is_insecure)
+    response = stub.get_user(SimpleWebRpc::GetUserRequest.new(user_id: user_id.to_i))
 
     return nil unless response.found
 

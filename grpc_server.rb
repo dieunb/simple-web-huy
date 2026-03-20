@@ -12,9 +12,9 @@ require_relative 'config/sidekiq_loader'
 # Load gRPC files
 require_relative 'grpc/user_service_services_pb'
 
-module GrpcUser
+module SimpleWebRpc
   # gRPC service implementation for user operations
-  class UserServiceImpl < UserService::Service
+  class UserServiceImpl < SimpleWebRpc::UserService::Service
     def get_user(request, _unused_call)
       user = ::User.find_by(id: request.user_id)
       build_response(user)
@@ -25,7 +25,7 @@ module GrpcUser
     def build_response(user)
       return not_found_response unless user
 
-      GrpcUser::GetUserResponse.new(
+      SimpleWebRpc::GetUserResponse.new(
         id: user.id,
         name: user.email.split('@').first,
         email: user.email,
@@ -34,7 +34,7 @@ module GrpcUser
     end
 
     def not_found_response
-      GrpcUser::GetUserResponse.new(id: 0, name: '', email: '', found: false)
+      SimpleWebRpc::GetUserResponse.new(id: 0, name: '', email: '', found: false)
     end
   end
 end
@@ -43,7 +43,7 @@ def main
   addr = '0.0.0.0:50051'
   server = GRPC::RpcServer.new
   server.add_http2_port(addr, :this_port_is_insecure)
-  server.handle(GrpcUser::UserServiceImpl)
+  server.handle(SimpleWebRpc::UserServiceImpl)
   puts "gRPC UserService listening on #{addr}"
   server.run_till_terminated
 end

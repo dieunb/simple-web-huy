@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package user;
+package simple_web_rpc;
 
 service UserService {
   rpc GetUser(GetUserRequest) returns (GetUserResponse);

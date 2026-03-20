@@ -10,7 +10,7 @@ descriptor_data = "\n\x12user_service.proto\x12\x04user\"!\n\x0eGetUserRequest\x
 pool = Google::Protobuf::DescriptorPool.generated_pool
 pool.add_serialized_file(descriptor_data)
 
-module GrpcUser
-  GetUserRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup('user.GetUserRequest').msgclass
-  GetUserResponse = ::Google::Protobuf::DescriptorPool.generated_pool.lookup('user.GetUserResponse').msgclass
+module SimpleWebRpc
+  GetUserRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup('simple_web_rpc.GetUserRequest').msgclass
+  GetUserResponse = ::Google::Protobuf::DescriptorPool.generated_pool.lookup('simple_web_rpc.GetUserResponse').msgclass
 end
