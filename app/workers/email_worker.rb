@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 require 'sidekiq'
-require 'grpc'
-require_relative '../../grpc/user_service_services_pb'
+require_relative '../../lib/grpc/client'
 
 # Background worker for sending emails asynchronously
 class EmailWorker
@@ -33,11 +32,7 @@ class EmailWorker
   end
 
   def fetch_user_via_grpc(user_id)
-    logger.info("Calling gRPC for user: #{user_id}")
-    host = ENV.fetch('GRPC_HOST', 'localhost:50051')
-    stub = SimpleWebRpc::UserService::Stub.new(host, :this_channel_is_insecure)
-    response = stub.get_user(SimpleWebRpc::GetUserRequest.new(user_id: user_id.to_i))
-
+    response = Grpc::Client.user.get_user(user_id)
     return nil unless response.found
 
     user_struct = Struct.new(:id, :name, :email)
