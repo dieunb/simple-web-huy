@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'base_client'
-require_relative '../../grpc/user_service_services_pb'
+require_relative '../proto/user_service_services_pb'
 
 module Grpc
   # Centralized client for accessing gRPC services

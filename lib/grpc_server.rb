@@ -7,10 +7,10 @@ require 'dotenv/load'
 require 'yaml'
 
 # Reuse existing app boot logic to avoid duplicating config/DB setup
-require_relative 'config/sidekiq_loader'
+require_relative '../config/sidekiq_loader'
 
 # Load gRPC files
-require_relative 'grpc/user_service_services_pb'
+require_relative 'proto/user_service_services_pb'
 
 module SimpleWebRpc
   # gRPC service implementation for user operations
