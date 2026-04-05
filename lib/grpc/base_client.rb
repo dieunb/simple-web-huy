@@ -13,11 +13,7 @@ module Grpc
       end
 
       def call(method_name, request)
-        stub = create_stub
-        logger.info("[gRPC] Calling #{service_name}##{method_name}")
-        response = stub.public_send(method_name, request)
-        logger.info("[gRPC] #{service_name}##{method_name} succeeded")
-        response
+        execute_call(method_name, request)
       rescue GRPC::BadStatus => e
         logger.error("[gRPC] #{service_name}##{method_name} failed: #{e.code} - #{e.details}")
         raise
@@ -27,6 +23,14 @@ module Grpc
       end
 
       private
+
+      def execute_call(method_name, request)
+        stub = create_stub
+        logger.info("[gRPC] Calling #{service_name}##{method_name}")
+        response = stub.public_send(method_name, request)
+        logger.info("[gRPC] #{service_name}##{method_name} succeeded")
+        response
+      end
 
       def create_stub
         stub_class.new(DEFAULT_HOST, :this_channel_is_insecure)
