@@ -2,17 +2,14 @@
 AllCops:
   TargetRubyVersion: 3.2
   NewCops: enable
+  Exclude:
+    - 'lib/proto/**/*'
 
 # Exclude schema.rb from BlockLength checks
 Metrics/BlockLength:
   Exclude:
     - 'db/schema.rb'
     - 'db/migrate/*'
-
-# Exclude generated protobuf files from line length checks
-Layout/LineLength:
-  Exclude:
-    - 'grpc/*_pb.rb'
 
 Naming/BlockForwarding:
   Enabled: false
