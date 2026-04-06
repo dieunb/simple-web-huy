@@ -5,7 +5,7 @@ require 'grpc'
 module Grpc
   # Base client handling connection, error handling, and logging
   class BaseClient
-    DEFAULT_HOST = ENV.fetch('GRPC_HOST', 'localhost:50051')
+    DEFAULT_HOST = "#{ENV.fetch('USER_GRPC_HOST', 'localhost')}:#{ENV.fetch('USER_GRPC_PORT', '50051')}".freeze
 
     class << self
       def stub_class
