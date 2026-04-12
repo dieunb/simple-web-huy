@@ -63,7 +63,6 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-      GRPC_PORT: 50051
 
   worker:
     build: .
