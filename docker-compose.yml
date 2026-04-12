@@ -17,8 +17,7 @@ services:
   web:
     build: .
     container_name: simpleweb-app
-    #command: bash -c "bundle exec rake db:migrate && bundle exec rackup -o 0.0.0.0 -p 9292"
-    command: bash -c "bundle exec puma -C config/puma.rb"
+    command: bash -c "bundle exec rake db:migrate && bundle exec puma -C config/puma.rb"
     volumes:
       - .:/app
     ports:
@@ -64,7 +63,7 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-      USER_GRPC_PORT: 50051
+      GRPC_PORT: 50051
 
   worker:
     build: .
@@ -84,8 +83,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       REDIS_URL: redis://redis:6379/0
-      USER_GRPC_HOST: grpc
-      USER_GRPC_PORT: 50051
+      GRPC_HOST: grpc
+      GRPC_PORT: 50051
       SMTP_USER: ${SMTP_USER}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
       SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
