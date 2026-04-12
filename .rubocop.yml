@@ -2,6 +2,8 @@
 AllCops:
   TargetRubyVersion: 3.2
   NewCops: enable
+  Exclude:
+    - 'lib/proto/**/*'
 
 # Exclude schema.rb from BlockLength checks
 Metrics/BlockLength:
