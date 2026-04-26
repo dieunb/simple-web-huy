@@ -20,7 +20,8 @@ class CategoriesController < Frack::BaseController
 
     return category_not_found unless find_category
 
-    @pagy, @products = setup_pagination(@category.products.order(:id))
+    all_products = Product.find_by_category_cached(@category.id)
+    @pagy, @products = setup_pagination_for_array(all_products)
     render 'categories/show'
   end
 

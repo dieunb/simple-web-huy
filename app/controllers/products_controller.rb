@@ -5,7 +5,8 @@ class ProductsController < Frack::BaseController
   def index
     return require_authentication unless current_user
 
-    @pagy, @products = setup_pagination(Product.includes(:category).order(:id))
+    all_products = Product.all_cached
+    @pagy, @products = setup_pagination_for_array(all_products)
     render 'products/index'
   end
 
@@ -43,7 +44,7 @@ class ProductsController < Frack::BaseController
 
   def find_product
     product_id = request.params['id']
-    @product = Product.find_by(id: product_id)
+    @product = Product.find_cached(product_id)
   end
 
   def product_not_found
