@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'redis'
+require 'logger'
 
 # Model for Product
 class Product < ActiveRecord::Base
@@ -18,6 +19,10 @@ class Product < ActiveRecord::Base
       @redis_client ||= Redis.new(url: redis_url)
     end
 
+    def logger
+      @logger ||= Logger.new($stdout)
+    end
+
     # Returns a persisted-like AR instance from Redis, falling back to the DB.
     def find_cached(id)
       cache_key = "#{CACHE_PREFIX}:#{id}"
@@ -32,7 +37,7 @@ class Product < ActiveRecord::Base
       redis_client.setex(cache_key, CACHE_TTL, product.to_json(include: :category))
       product
     rescue Redis::BaseError => e
-      Rails.logger.warn("Redis error: #{e.message}. Falling back to DB.")
+      logger.warn("Redis error: #{e.message}. Falling back to DB.")
       find_by(id: id)
     end
 
@@ -52,7 +57,7 @@ class Product < ActiveRecord::Base
       redis_client.setex(cache_key, CACHE_TTL, products.to_json(include: :category))
       products
     rescue Redis::BaseError => e
-      Rails.logger.warn("Redis error: #{e.message}. Falling back to DB.")
+      logger.warn("Redis error: #{e.message}. Falling back to DB.")
       all.to_a
     end
 
@@ -65,7 +70,7 @@ class Product < ActiveRecord::Base
       redis_client.setex(cache_key, CACHE_TTL, products.to_json(include: :category))
       products
     rescue Redis::BaseError => e
-      Rails.logger.warn("Redis error: #{e.message}. Falling back to DB.")
+      logger.warn("Redis error: #{e.message}. Falling back to DB.")
       where(brand: brand).to_a
     end
 
@@ -78,7 +83,7 @@ class Product < ActiveRecord::Base
       redis_client.setex(cache_key, CACHE_TTL, products.to_json(include: :category))
       products
     rescue Redis::BaseError => e
-      Rails.logger.warn("Redis error: #{e.message}. Falling back to DB.")
+      logger.warn("Redis error: #{e.message}. Falling back to DB.")
       where(category_id: category_id).to_a
     end
 
@@ -89,11 +94,15 @@ class Product < ActiveRecord::Base
     end
   end
 
+  def logger
+    self.class.logger
+  end
+
   def cache_self
     cache_key = "#{self.class::CACHE_PREFIX}:#{id}"
     self.class.redis_client.setex(cache_key, self.class::CACHE_TTL, to_json(include: :category))
   rescue Redis::BaseError => e
-    Rails.logger.warn("Redis error: #{e.message}. Cache write failed.")
+    logger.warn("Redis error: #{e.message}. Cache write failed.")
   end
 
   private
@@ -110,7 +119,7 @@ class Product < ActiveRecord::Base
     keys_to_delete.concat(related_cache_keys)
     self.class.redis_client.del(*keys_to_delete)
   rescue Redis::BaseError => e
-    Rails.logger.warn("Redis error: #{e.message}. Cache invalidation failed.")
+    logger.warn("Redis error: #{e.message}. Cache invalidation failed.")
   end
 
   def related_cache_keys
@@ -123,6 +132,5 @@ class Product < ActiveRecord::Base
   def invalidate_related_caches
     self.class.redis_client.del(*related_cache_keys)
   rescue Redis::BaseError => e
-    Rails.logger.warn("Redis error: #{e.message}. Cache invalidation failed.")
+    logger.warn("Redis error: #{e.message}. Cache invalidation failed.")
   end
-end
