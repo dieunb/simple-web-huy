@@ -1,46 +1,21 @@
 # frozen_string_literal: true
 
-require 'redis'
-require 'logger'
+require_relative '../../lib/cacheable'
 
 # Model for Product
 class Product < ActiveRecord::Base
+  include Cacheable
+
   belongs_to :category
   validates :name, presence: true, length: { minimum: 3 }
 
   CACHE_PREFIX = 'product'
-  CACHE_TTL = 3600 # 1 hour
+  CACHE_TTL    = 3600 # 1 hour
 
-  after_save    :sync_cache
-  after_destroy :invalidate_cache
-
+  # ---------------------------------------------------------------------------
+  # Product-specific cached finders (class level)
+  # ---------------------------------------------------------------------------
   class << self
-    def redis_client
-      @redis_client ||= Redis.new(url: redis_url)
-    end
-
-    def logger
-      @logger ||= Logger.new($stdout)
-    end
-
-    # Returns a persisted-like AR instance from Redis, falling back to the DB.
-    def find_cached(id)
-      cache_key = "#{CACHE_PREFIX}:#{id}"
-      cached_data = redis_client.get(cache_key)
-
-      return instantiate(JSON.parse(cached_data)) if cached_data
-
-      # Cache miss: load from DB, populate Redis, return the real record
-      product = find_by(id: id)
-      return nil unless product
-
-      redis_client.setex(cache_key, CACHE_TTL, product.to_json(include: :category))
-      product
-    rescue Redis::BaseError => e
-      logger.warn("Redis error: #{e.message}. Falling back to DB.")
-      find_by(id: id)
-    end
-
     def find_cached!(id)
       product = find_cached(id)
       raise ActiveRecord::RecordNotFound, "Couldn't find Product with 'id'=#{id}" unless product
@@ -49,7 +24,7 @@ class Product < ActiveRecord::Base
     end
 
     def all_cached
-      cache_key = "#{CACHE_PREFIX}:all"
+      cache_key   = "#{cache_prefix}:all"
       cached_data = redis_client.get(cache_key)
       return JSON.parse(cached_data).map { |data| instantiate(data) } if cached_data
 
@@ -57,12 +32,12 @@ class Product < ActiveRecord::Base
       redis_client.setex(cache_key, CACHE_TTL, products.to_json(include: :category))
       products
     rescue Redis::BaseError => e
-      logger.warn("Redis error: #{e.message}. Falling back to DB.")
+      Logger.new($stdout).warn("Redis error in all_cached: #{e.message}. Falling back to DB.")
       all.to_a
     end
 
     def find_by_brand_cached(brand)
-      cache_key = "#{CACHE_PREFIX}:brand:#{brand}"
+      cache_key   = "#{cache_prefix}:brand:#{brand}"
       cached_data = redis_client.get(cache_key)
       return JSON.parse(cached_data).map { |data| instantiate(data) } if cached_data
 
@@ -70,12 +45,12 @@ class Product < ActiveRecord::Base
       redis_client.setex(cache_key, CACHE_TTL, products.to_json(include: :category))
       products
     rescue Redis::BaseError => e
-      logger.warn("Redis error: #{e.message}. Falling back to DB.")
+      Logger.new($stdout).warn("Redis error in find_by_brand_cached: #{e.message}. Falling back to DB.")
       where(brand: brand).to_a
     end
 
     def find_by_category_cached(category_id)
-      cache_key = "#{CACHE_PREFIX}:category:#{category_id}"
+      cache_key   = "#{cache_prefix}:category:#{category_id}"
       cached_data = redis_client.get(cache_key)
       return JSON.parse(cached_data).map { |data| instantiate(data) } if cached_data
 
@@ -83,54 +58,19 @@ class Product < ActiveRecord::Base
       redis_client.setex(cache_key, CACHE_TTL, products.to_json(include: :category))
       products
     rescue Redis::BaseError => e
-      logger.warn("Redis error: #{e.message}. Falling back to DB.")
+      Logger.new($stdout).warn("Redis error in find_by_category_cached: #{e.message}. Falling back to DB.")
       where(category_id: category_id).to_a
     end
-
-    private
-
-    def redis_url
-      ENV.fetch('REDIS_URL', 'redis://localhost:6379/0')
-    end
-  end
-
-  def logger
-    self.class.logger
-  end
-
-  def cache_self
-    cache_key = "#{self.class::CACHE_PREFIX}:#{id}"
-    self.class.redis_client.setex(cache_key, self.class::CACHE_TTL, to_json(include: :category))
-  rescue Redis::BaseError => e
-    logger.warn("Redis error: #{e.message}. Cache write failed.")
   end
 
   private
 
-  # Called after every save (create + update).
-  def sync_cache
-    cache_self
-    invalidate_related_caches
-  end
-
-  # Called after destroy — remove every cache key that referenced this product.
-  def invalidate_cache
-    keys_to_delete = ["#{self.class::CACHE_PREFIX}:#{id}"]
-    keys_to_delete.concat(related_cache_keys)
-    self.class.redis_client.del(*keys_to_delete)
-  rescue Redis::BaseError => e
-    logger.warn("Redis error: #{e.message}. Cache invalidation failed.")
-  end
-
+  # Tell Cacheable which collection keys belong to this product so they get
+  # busted automatically on save/destroy.
   def related_cache_keys
-    keys = ["#{self.class::CACHE_PREFIX}:all"]
-    keys << "#{self.class::CACHE_PREFIX}:brand:#{brand}" if brand
-    keys << "#{self.class::CACHE_PREFIX}:category:#{category_id}" if category_id
+    keys = ["#{self.class.cache_prefix}:all"]
+    keys << "#{self.class.cache_prefix}:brand:#{brand}"       if brand
+    keys << "#{self.class.cache_prefix}:category:#{category_id}" if category_id
     keys
   end
-
-  def invalidate_related_caches
-    self.class.redis_client.del(*related_cache_keys)
-  rescue Redis::BaseError => e
-    logger.warn("Redis error: #{e.message}. Cache invalidation failed.")
-  end
+end
