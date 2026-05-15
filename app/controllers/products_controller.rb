@@ -5,8 +5,11 @@ class ProductsController < Frack::BaseController
   def index
     return require_authentication unless current_user
 
-    all_products = Product.all_cached
-    @pagy, @products = setup_pagination_for_array(all_products)
+    # Paginate using Pagy's built-in AR backend (available via Pagy::Backend),
+    # then batch-load the page's records from Redis in one MGET call.
+    @pagy, paged_products = setup_pagination(Product.order(:id))
+    ids = paged_products.map(&:id)
+    @products = Product.fetch_multi_cached(ids)
     render 'products/index'
   end
 
@@ -38,7 +41,6 @@ class ProductsController < Frack::BaseController
 
     [[], 302, { 'location' => '/products' }]
   end
-
 
   private
 

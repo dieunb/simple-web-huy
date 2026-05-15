@@ -29,27 +29,27 @@ class Product < ActiveRecord::Base
       product
     end
 
-    def all_cached
-      fetch_collection_cache("#{cache_prefix}:all") { all.to_a }
-    end
-
     def find_by_brand_cached(brand)
-      fetch_collection_cache("#{cache_prefix}:brand:#{brand}") { where(brand: brand).to_a }
+      ids = where(brand: brand).pluck(:id)
+      fetch_multi_cached(ids)
     end
 
     def find_by_category_cached(category_id)
-      fetch_collection_cache("#{cache_prefix}:category:#{category_id}") { where(category_id: category_id).to_a }
+      ids = where(category_id: category_id).pluck(:id)
+      fetch_multi_cached(ids)
     end
   end
 
   private
 
-  # Tell Cacheable which collection keys belong to this product so they get
-  # busted automatically on save/destroy.
+  # Collection keys that must be invalidated when this product changes.
+  # NOTE: We no longer maintain a monolithic ":all" key.
+  #       Pagination uses fetch_multi_cached(ids) so only individual
+  #       record keys need to be managed here.
   def related_cache_keys
-    keys = ["#{self.class.cache_prefix}:all"]
-    keys << "#{self.class.cache_prefix}:brand:#{brand}"            if brand
-    keys << "#{self.class.cache_prefix}:category:#{category_id}"   if category_id
+    keys = []
+    keys << "#{self.class.cache_prefix}:brand:#{brand}"          if brand
+    keys << "#{self.class.cache_prefix}:category:#{category_id}" if category_id
     keys
   end
 end

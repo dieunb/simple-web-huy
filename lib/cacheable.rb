@@ -22,16 +22,16 @@ require 'logger'
 #   CACHE_TTL     – integer TTL in seconds
 #
 # Class methods provided (via ClassMethods):
-#   redis_client               – memoised Redis connection
-#   cache_prefix               – returns self::CACHE_PREFIX
-#   cache_includes             – override to specify associations to embed (default: nil)
-#   find_cached(id)            – cache-aware find; hydrates associations from JSON
-#   fetch_collection_cache     – generic helper for list-level caches
+#   redis_client                  – memoised Redis connection
+#   cache_prefix                  – returns self::CACHE_PREFIX
+#   cache_includes                – override to specify associations to embed (default: nil)
+#   find_cached(id)               – cache-aware single-record find; hydrates associations
+#   fetch_multi_cached(ids)       – batch fetch via Redis MGET; DB fallback for misses only
 #
 # Instance methods provided:
-#   cache_self                 – serialises this record (with associations) into Redis
-#   sync_cache                 – cache_self + bust collection keys (after_save)
-#   invalidate_cache           – remove all keys for this record (after_destroy)
+#   cache_self                    – serialises this record (with associations) into Redis
+#   sync_cache                    – cache_self + bust collection keys (after_save)
+#   invalidate_cache              – remove individual record key (after_destroy)
 module Cacheable
   def self.included(base)
     base.extend(ClassMethods)
@@ -86,25 +86,59 @@ module Cacheable
       find_by(id: id)
     end
 
-    # Generic helper for collection-level caches.
-    # Reads from Redis, or calls the block to load from the DB and populates
-    # the cache.  All hydration of associations is handled automatically.
+    # Batch-fetch records by a list of ids using a single Redis MGET call.
     #
-    #   fetch_collection_cache("product:all") { all.to_a }
+    # Strategy (Individual Records cache — pagination-friendly):
+    #   1. Build one cache key per id and call MGET in a single round-trip.
+    #   2. Hydrate all cache hits immediately (no SQL).
+    #   3. Collect the missed ids, load them from the DB in one query,
+    #      warm each individual key via cache_self, then merge with hits.
+    #   4. Return records in the same order as the supplied ids array.
     #
-    def fetch_collection_cache(cache_key, &fallback)
-      cached_data = redis_client.get(cache_key)
-      return JSON.parse(cached_data).map { |attrs| hydrate(attrs) } if cached_data
+    # Falls back to a plain DB query for all ids on any Redis error.
+    #
+    #   ids = Product.order(:name).limit(20).offset(page * 20).pluck(:id)
+    #   products = Product.fetch_multi_cached(ids)
+    #
+    def fetch_multi_cached(ids)
+      return [] if ids.empty?
 
-      records = fallback.call
-      redis_client.setex(cache_key, self::CACHE_TTL, records.to_json(include: cache_includes))
-      records
+      keys = ids.map { |id| "#{cache_prefix}:#{id}" }
+      hits, missed_ids = build_hits_from_cache(ids, redis_client.mget(*keys))
+      load_missed_records(hits, missed_ids)
+      ids.filter_map { |id| hits[id.to_s] }
     rescue Redis::BaseError => e
-      Logger.new($stdout).warn("Redis error in fetch_collection_cache: #{e.message}. Falling back to DB.")
-      fallback.call
+      Logger.new($stdout).warn("Redis error in fetch_multi_cached: #{e.message}. Falling back to DB.")
+      db_fallback_ordered(ids)
     end
 
     private
+
+    # Partition MGET results into a hits hash and a list of missed ids.
+    def build_hits_from_cache(ids, raw_values)
+      hits = {}
+      missed_ids = []
+      ids.zip(raw_values).each do |id, raw|
+        raw ? hits[id.to_s] = hydrate(JSON.parse(raw)) : missed_ids << id
+      end
+      [hits, missed_ids]
+    end
+
+    # DB fallback that preserves the caller-supplied id order.
+    def db_fallback_ordered(ids)
+      records = where(id: ids).includes(cache_includes).index_by { |r| r.id.to_s }
+      ids.filter_map { |id| records[id.to_s] }
+    end
+
+    # Load missed ids from the DB, warm their cache keys, merge into hits.
+    def load_missed_records(hits, missed_ids)
+      return if missed_ids.empty?
+
+      where(id: missed_ids).includes(cache_includes).each do |record|
+        record.cache_self
+        hits[record.id.to_s] = record
+      end
+    end
 
     # Rebuild an AR instance from a raw attribute hash parsed from Redis JSON.
     #
@@ -147,14 +181,14 @@ module Cacheable
   end
 
   # Called automatically via after_save.
-  # Refreshes the individual-record cache and busts collection caches.
+  # Refreshes the individual-record cache and busts model-specific collection keys.
   def sync_cache
     cache_self
     invalidate_related_caches
   end
 
   # Called automatically via after_destroy.
-  # Removes every cache key that referenced this record.
+  # Removes this record's individual cache key plus any related collection keys.
   def invalidate_cache
     keys_to_delete = ["#{self.class.cache_prefix}:#{id}"]
     keys_to_delete.concat(related_cache_keys)
@@ -175,7 +209,10 @@ module Cacheable
     Logger.new($stdout).warn("Redis error in invalidate_related_caches: #{e.message}. Cache invalidation failed.")
   end
 
-  # Override in the including model to return model-specific collection keys.
+  # Override in the including model to return model-specific collection keys
+  # that should be invalidated when this record is saved or destroyed.
+  # The global ":all" key should NOT be included here — use fetch_multi_cached
+  # with paginated ids instead of a monolithic collection cache.
   def related_cache_keys
     []
   end
