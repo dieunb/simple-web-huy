@@ -13,9 +13,15 @@ class Product < ActiveRecord::Base
   CACHE_TTL    = 3600 # 1 hour
 
   # ---------------------------------------------------------------------------
-  # Product-specific cached finders (class level)
+  # Product-specific class methods
   # ---------------------------------------------------------------------------
   class << self
+    # Embed the :category association in every cached payload so that
+    # product.category.name in views never triggers a second SQL query.
+    def cache_includes
+      :category
+    end
+
     def find_cached!(id)
       product = find_cached(id)
       raise ActiveRecord::RecordNotFound, "Couldn't find Product with 'id'=#{id}" unless product
@@ -24,42 +30,15 @@ class Product < ActiveRecord::Base
     end
 
     def all_cached
-      cache_key   = "#{cache_prefix}:all"
-      cached_data = redis_client.get(cache_key)
-      return JSON.parse(cached_data).map { |data| instantiate(data) } if cached_data
-
-      products = all.to_a
-      redis_client.setex(cache_key, CACHE_TTL, products.to_json(include: :category))
-      products
-    rescue Redis::BaseError => e
-      Logger.new($stdout).warn("Redis error in all_cached: #{e.message}. Falling back to DB.")
-      all.to_a
+      fetch_collection_cache("#{cache_prefix}:all") { all.to_a }
     end
 
     def find_by_brand_cached(brand)
-      cache_key   = "#{cache_prefix}:brand:#{brand}"
-      cached_data = redis_client.get(cache_key)
-      return JSON.parse(cached_data).map { |data| instantiate(data) } if cached_data
-
-      products = where(brand: brand).to_a
-      redis_client.setex(cache_key, CACHE_TTL, products.to_json(include: :category))
-      products
-    rescue Redis::BaseError => e
-      Logger.new($stdout).warn("Redis error in find_by_brand_cached: #{e.message}. Falling back to DB.")
-      where(brand: brand).to_a
+      fetch_collection_cache("#{cache_prefix}:brand:#{brand}") { where(brand: brand).to_a }
     end
 
     def find_by_category_cached(category_id)
-      cache_key   = "#{cache_prefix}:category:#{category_id}"
-      cached_data = redis_client.get(cache_key)
-      return JSON.parse(cached_data).map { |data| instantiate(data) } if cached_data
-
-      products = where(category_id: category_id).to_a
-      redis_client.setex(cache_key, CACHE_TTL, products.to_json(include: :category))
-      products
-    rescue Redis::BaseError => e
-      Logger.new($stdout).warn("Redis error in find_by_category_cached: #{e.message}. Falling back to DB.")
-      where(category_id: category_id).to_a
+      fetch_collection_cache("#{cache_prefix}:category:#{category_id}") { where(category_id: category_id).to_a }
     end
   end
 
@@ -69,8 +48,8 @@ class Product < ActiveRecord::Base
   # busted automatically on save/destroy.
   def related_cache_keys
     keys = ["#{self.class.cache_prefix}:all"]
-    keys << "#{self.class.cache_prefix}:brand:#{brand}"       if brand
-    keys << "#{self.class.cache_prefix}:category:#{category_id}" if category_id
+    keys << "#{self.class.cache_prefix}:brand:#{brand}"            if brand
+    keys << "#{self.class.cache_prefix}:category:#{category_id}"   if category_id
     keys
   end
 end
