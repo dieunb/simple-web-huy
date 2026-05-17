@@ -17,7 +17,14 @@ services:
   web:
     build: .
     container_name: simpleweb-app
-    command: bash -c "bundle exec rake db:migrate && bundle exec puma -C config/puma.rb"
+    command: >
+      bash -c "
+        bundle exec rake db:migrate &&
+        if PGPASSWORD=$${DB_PASSWORD} psql -U $${DB_USERNAME} -h db -d $${DB_NAME} -tAc 'SELECT COUNT(*) FROM products' | grep -q '^0$'; then
+          PGPASSWORD=$${DB_PASSWORD} psql -U $${DB_USERNAME} -h db -d $${DB_NAME} < /app/seed.sql;
+        fi &&
+        bundle exec puma -C config/puma.rb
+      "
     volumes:
       - .:/app
     ports:
@@ -25,6 +32,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
     environment:
       RACK_ENV: development
       DB_HOST: db
@@ -38,6 +47,7 @@ services:
       SMTP_USER: ${SMTP_USER}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
       SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
+      REDIS_URL: ${REDIS_URL}
 
   redis:
     image: redis:7-alpine
@@ -81,7 +91,7 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: ${REDIS_URL}
       GRPC_HOST: grpc
       GRPC_PORT: 50051
       SMTP_USER: ${SMTP_USER}

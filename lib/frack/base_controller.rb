@@ -42,5 +42,13 @@ module Frack
       page ||= request.params['page'] || 1
       pagy(collection, page: page)
     end
+
+    def setup_pagination_for_array(array, page: nil)
+      page ||= (request.params['page'] || 1).to_i
+      per_page = 20
+      pagy = Pagy.new(count: array.length, page: page, limit: per_page)
+      paginated_array = array[pagy.offset, pagy.limit] || []
+      [pagy, paginated_array]
+    end
   end
 end
