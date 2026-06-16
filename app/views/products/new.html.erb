@@ -86,6 +86,15 @@
               </div>
             </div>
 
+            <!-- reCAPTCHA v2 Checkbox -->
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+            <div class="mb-3">
+              <label class="form-label d-block">
+                <i class="fas fa-shield-alt me-1"></i>Security Verification <span class="text-danger">*</span>
+              </label>
+              <div class="g-recaptcha" data-sitekey="<%= ENV['RECAPTCHA_SITE_KEY'] %>"></div>
+            </div>
+
             <div class="d-flex justify-content-between pt-3">
               <a href="/products" class="btn btn-secondary">
                 <i class="fas fa-arrow-left me-1"></i>Cancel
