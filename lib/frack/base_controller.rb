@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'net/http'
+require 'uri'
+require 'json'
+
 module Frack
   # Base controller class that provides common functionality for all controllers
   class BaseController
@@ -49,6 +53,46 @@ module Frack
       pagy = Pagy.new(count: array.length, page: page, limit: per_page)
       paginated_array = array[pagy.offset, pagy.limit] || []
       [pagy, paginated_array]
+    end
+
+    def generate_captcha(namespace = 'default')
+      @num1 = rand(1..10)
+      @num2 = rand(1..10)
+      request.session["captcha_answer_#{namespace}"] = @num1 + @num2
+    end
+
+    def valid_captcha?(namespace = 'default')
+      recaptcha_response = request.params['g-recaptcha-response']
+      if recaptcha_response && !recaptcha_response.empty?
+        return verify_recaptcha(recaptcha_response)
+      end
+
+      return false if request.params['captcha'].nil?
+
+      request.params['captcha'].to_i == request.session["captcha_answer_#{namespace}"].to_i
+    end
+
+    private
+
+    def verify_recaptcha(response_token)
+      secret_key = ENV['RECAPTCHA_SECRET_KEY']
+      return false if secret_key.nil? || secret_key.empty?
+
+      uri = URI.parse('https://www.google.com/recaptcha/api/siteverify')
+      res = Net::HTTP.post_form(uri, {
+        'secret' => secret_key,
+        'response' => response_token,
+        'remoteip' => request.ip
+      })
+
+      if res.is_a?(Net::HTTPSuccess)
+        result = JSON.parse(res.body)
+        result['success'] == true
+      else
+        false
+      end
+    rescue => e
+      false
     end
   end
 end
