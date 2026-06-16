@@ -50,5 +50,17 @@ module Frack
       paginated_array = array[pagy.offset, pagy.limit] || []
       [pagy, paginated_array]
     end
+
+    def generate_captcha(namespace = 'default')
+      @num1 = rand(1..10)
+      @num2 = rand(1..10)
+      request.session["captcha_answer_#{namespace}"] = @num1 + @num2
+    end
+
+    def valid_captcha?(namespace = 'default')
+      return false if request.params['captcha'].nil?
+
+      request.params['captcha'].to_i == request.session["captcha_answer_#{namespace}"].to_i
+    end
   end
 end

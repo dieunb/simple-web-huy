@@ -17,6 +17,15 @@
                      required 
                      placeholder="e.g., Web Development">
             </div>
+            <div class="mb-4">
+              <label for="captcha" class="form-label fs-5">Captcha: What is <%= @num1 %> + <%= @num2 %>?</label>
+              <input type="text" 
+                     class="form-control form-control-lg" 
+                     id="captcha" 
+                     name="captcha" 
+                     required 
+                     placeholder="Enter answer">
+            </div>
             
             <div class="d-grid mb-3">
               <button type="submit" class="btn btn-primary btn-lg fw-bold">Create Category</button>

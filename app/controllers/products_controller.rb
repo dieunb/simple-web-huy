@@ -14,10 +14,16 @@ class ProductsController < Frack::BaseController
   end
 
   def new
+    generate_captcha('product')
     render 'products/new'
   end
 
   def create
+    unless valid_captcha?('product')
+      request.session['flash'] = 'Incorrect captcha answer'
+      return [[], 302, { 'location' => '/products/new' }]
+    end
+
     new_product = Product.new(product_params)
 
     if new_product.save
