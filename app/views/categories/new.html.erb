@@ -17,6 +17,12 @@
                      required 
                      placeholder="e.g., Web Development">
             </div>
+            <!-- reCAPTCHA v2 Checkbox -->
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+            <div class="mb-4">
+              <label class="form-label fs-5 d-block">Security Verification</label>
+              <div class="g-recaptcha" data-sitekey="<%= ENV['RECAPTCHA_SITE_KEY'] %>"></div>
+            </div>
             
             <div class="d-grid mb-3">
               <button type="submit" class="btn btn-primary btn-lg fw-bold">Create Category</button>

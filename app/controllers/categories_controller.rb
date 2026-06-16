@@ -12,6 +12,7 @@ class CategoriesController < Frack::BaseController
   def new
     return require_authentication unless current_user
 
+    generate_captcha('category')
     render 'categories/new'
   end
 
@@ -26,6 +27,11 @@ class CategoriesController < Frack::BaseController
   end
 
   def create
+    unless valid_captcha?('category')
+      request.session['flash'] = 'Incorrect captcha answer'
+      return [[], 302, { 'location' => '/categories/new' }]
+    end
+
     name = request.params['name']
     flash_mess, location = creation_outcome(name)
 
